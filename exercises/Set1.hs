@@ -86,7 +86,7 @@ checkPassword password = if password == "swordfish" || password == "mellon"
 -- Write a function postagePrice that takes the weight of a package
 -- in grams, and returns the cost in credits.
 
-postagePrice :: Int -> Int
+postagePrice :: Integer -> Integer
 postagePrice weigh | weigh > 5000 = 6000
 postagePrice weigh | weigh > 500 = 300 + weigh
 postagePrice weigh | weigh <= 500 = 250
@@ -99,7 +99,9 @@ postagePrice weigh | weigh <= 500 = 250
 --
 -- Ps. remember, the type of booleans in haskell is Bool
 
-isZero = todo
+isZero :: Integer -> Bool
+isZero 0 = True
+isZero _ = False
 
 ------------------------------------------------------------------------------
 -- Ex 9: implement using recursion a function sumTo such that
