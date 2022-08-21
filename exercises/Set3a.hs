@@ -82,9 +82,13 @@ mapMaybe2 f x y = case x of
 palindromeHalfs :: [String] -> [String]
 palindromeHalfs xs = map firstHalf (filter palindrome xs)
 
-firstHalf = todo
+firstHalf a = take (firstHalfLength (length a)) a -- I am not sure how to use **where**
 
-palindrome = todo
+firstHalfLength a
+    | even a        = a `div` 2
+    | otherwise     = (a+1) `div` 2
+
+palindrome a = a == reverse a
 
 ------------------------------------------------------------------------------
 -- Ex 5: Implement a function capitalize that takes in a string and
