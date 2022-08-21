@@ -40,7 +40,7 @@ maxBy measure a b = if measure a > measure b then a else b
 --   mapMaybe length (Just "abc") ==> Just 3
 
 mapMaybe :: (a -> b) -> Maybe a -> Maybe b
-mapMaybe f x  = case x of
+mapMaybe f x = case x of
     Nothing -> Nothing
     Just x -> Just (f x)
 
