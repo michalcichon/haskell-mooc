@@ -199,7 +199,7 @@ bomb x = Right (x-1)
 -- Hint! This is a great use for list comprehensions
 
 joinToLength :: Int -> [String] -> [String]
-joinToLength i xs = [z | x <- xs, y <- xs, let z = x++y, length z == i]
+joinToLength len strings = [ comb | a <- strings, b <- strings, let comb = a ++ b, length comb == len ]
 
 ------------------------------------------------------------------------------
 -- Ex 10: implement the operator +|+ that returns a list with the first
@@ -214,7 +214,7 @@ joinToLength i xs = [z | x <- xs, y <- xs, let z = x++y, length z == i]
 --   [] +|+ []            ==> []
 
 (+|+) :: [a] -> [a] -> [a]
-xs +|+ ys = take 1 xs ++ take 1 ys
+x +|+ y = map head (filter (not . null) [x,y])
 
 ------------------------------------------------------------------------------
 -- Ex 11: remember the lectureParticipants example from Lecture 2? We
@@ -231,9 +231,12 @@ xs +|+ ys = take 1 xs ++ take 1 ys
 --   sumRights [Left "bad!", Left "missing"]         ==>  0
 
 sumRights :: [Either a Int] -> Int
-sumRights (Left  _ : xs) = sumRights xs
-sumRights (Right i : xs) = i + sumRights xs
-sumRights []             = 0
+sumRights [] = 0
+sumRights (x:xs) = getRight x + sumRights xs
+
+getRight :: Either a Int -> Int
+getRight (Left x)    = 0
+getRight (Right x)   = x
 
 ------------------------------------------------------------------------------
 -- Ex 12: recall the binary function composition operation
@@ -249,9 +252,10 @@ sumRights []             = 0
 --   multiCompose [(3*), (2^), (+1)] 0 ==> 6
 --   multiCompose [(+1), (2^), (3*)] 0 ==> 2
 
-multiCompose :: [a -> a] -> a -> a
-multiCompose [] x = x
-multiCompose (f:fs) x = f (multiCompose fs x)
+multiCompose fs x = multiCompose' (reverse fs) x
+multiCompose' :: [(a -> a)] -> a -> a
+multiCompose' [] x     = x
+multiCompose' (f:fs) x = multiCompose' fs (f x)
 
 ------------------------------------------------------------------------------
 -- Ex 13: let's consider another way to compose multiple functions. Given
@@ -272,8 +276,7 @@ multiCompose (f:fs) x = f (multiCompose fs x)
 --   multiApp id [head, (!!2), last] "axbxc" ==> ['a','b','c'] i.e. "abc"
 --   multiApp sum [head, (!!2), last] [1,9,2,9,3] ==> 6
 
-multiApp :: ([b] -> c) -> [a -> b] -> a -> c
-multiApp f gs x = f [g x | g <- gs]
+multiApp f gs x = f (map (\x' -> x' x) gs)
 
 ------------------------------------------------------------------------------
 -- Ex 14: in this exercise you get to implement an interpreter for a
@@ -308,12 +311,32 @@ multiApp f gs x = f [g x | g <- gs]
 -- function, the surprise won't work.
 
 interpreter :: [String] -> [String]
-interpreter commands = go 0 0 commands
-  where go x y ("up":commands) = go x (y+1) commands
-        go x y ("down":commands) = go x (y-1) commands
-        go x y ("left":commands) = go (x-1) y commands
-        go x y ("right":commands) = go (x+1) y commands
-        go x y ("printX":commands) = show x : go x y commands
-        go x y ("printY":commands) = show y : go x y commands
-        go x y []                  = []
-        go x y (_:commands)        = "BAD" : go x y commands
+interpreter commands = interpreter' 0 0 commands
+
+interpreter' :: Int -> Int -> [String] -> [String]
+interpreter' _ _ [] = []
+interpreter' x y commands = evalPrint xa ya (head d) : interpreter' xa ya (drop 1 d)
+    where
+        a = takeWhile direction commands
+        d = dropWhile direction commands
+        xa = sum (map dirX a) + x
+        ya = sum (map dirY a) + y
+
+direction :: String -> Bool
+direction s = elem s ["up", "down", "left", "right"]
+
+dirX :: String -> Int
+dirX x = case x of 
+    "left" -> -1
+    "right" -> 1
+    x -> 0
+
+dirY :: String -> Int
+dirY y = case y of 
+    "up" -> 1
+    "down" -> -1
+    y -> 0
+
+evalPrint :: Int -> Int -> String -> String
+evalPrint x _ "printX" = show x
+evalPrint _ y "printY" = show y
