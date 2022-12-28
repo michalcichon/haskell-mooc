@@ -16,10 +16,9 @@ import Data.List
 -- Hint! pattern matching is your friend.
 
 binomial :: Integer -> Integer -> Integer
-binomial n k 
- | n==0 && k>0 = 0
- | k==0 = 1
- | otherwise = binomial (n-1) k + binomial (n-1) (k-1)
+binomial n 0 = 1
+binomial 0 k = 0
+binomial n k = binomial (n-1) k + binomial (n-1) (k-1)
 
 ------------------------------------------------------------------------------
 -- Ex 2: implement the odd factorial function. Odd factorial is like
@@ -30,11 +29,8 @@ binomial n k
 --   oddFactorial 6 ==> 5*3*1 ==> 15
 
 oddFactorial :: Integer -> Integer
-oddFactorial n
- | n < 0 = 0
- | n == 0 || n == 1 = 1
- | even n = oddFactorial (n-1)
- | otherwise = oddFactorial (n-2) * n
+oddFactorial 1 = 1
+oddFactorial n = if even n then oddFactorial (n-1) else n * oddFactorial (n-1)
 
 ------------------------------------------------------------------------------
 -- Ex 3: implement the Euclidean Algorithm for finding the greatest
@@ -66,11 +62,16 @@ oddFactorial n
 -- * https://en.wikipedia.org/wiki/Euclidean_algorithm
 
 myGcd :: Integer -> Integer -> Integer
-myGcd a b
- | a==0         = b
- | b==0         = a
- | a<b          = myGcd a (b-a)
- | otherwise    = myGcd (a-b) b
+myGcd 0 y = y
+myGcd x y = if xAbs < yAbs
+            then myGcd yAbs xAbs
+            else myGcd (xAbs-yAbs) yAbs
+  -- Using the absolute values of x and y makes this function work
+  -- even with negative inputs. This is not required for this set.
+  -- However, without this fix you can run into problems in Set 6,
+  -- if you reuse this answer :)
+  where xAbs = abs x
+        yAbs = abs y
 
 ------------------------------------------------------------------------------
 -- Ex 4: Implement the function leftpad which adds space characters
@@ -86,9 +87,7 @@ myGcd a b
 -- * you can compute the length of a string with the length function
 
 leftpad :: String -> Int -> String
-leftpad s x
-    | length s == x         = s
-    | otherwise             = leftpad (" "++s) x
+leftpad s i = if length s >= i then s else leftpad (" "++s) i
 
 ------------------------------------------------------------------------------
 -- Ex 5: let's make a countdown for a rocket! Given a number, you
@@ -104,10 +103,10 @@ leftpad s x
 -- * you'll probably need a recursive helper function
 
 countdown :: Integer -> String
-countdown n = countdown' n ""
-countdown' n s 
-    | n == 0            = "Ready! " ++s ++ "Liftoff!"
-    | otherwise         = countdown' (n-1) (s ++ (show n) ++ "... ")
+countdown n = "Ready!   " ++ helper n ++ "Liftoff!"
+
+helper 0 = ""
+helper n = show n ++ "... " ++ helper (n-1)
 
 ------------------------------------------------------------------------------
 -- Ex 6: implement the function smallestDivisor that returns the
@@ -125,10 +124,12 @@ countdown' n s
 -- Hint: remember the mod function!
 
 smallestDivisor :: Integer -> Integer
-smallestDivisor n = smallestDivisor' n 2
-smallestDivisor' n t
-    | n `mod` t == 0        = t
-    | otherwise             = smallestDivisor' n (t+1)
+smallestDivisor n = smallestDivisor' 2 n
+
+smallestDivisor' k n =
+  if mod n k == 0
+  then k
+  else smallestDivisor' (k+1) n
 
 ------------------------------------------------------------------------------
 -- Ex 7: implement a function isPrime that checks if the given number
@@ -137,10 +138,9 @@ smallestDivisor' n t
 -- Ps. 0 and 1 are not prime numbers
 
 isPrime :: Integer -> Bool
-isPrime n 
-    | n == 0    = False
-    | n == 1    = False
-    | otherwise = smallestDivisor n == n
+isPrime 0 = False
+isPrime 1 = False
+isPrime i = smallestDivisor i == i
 
 ------------------------------------------------------------------------------
 -- Ex 8: implement a function biggestPrimeAtMost that returns the
@@ -155,6 +155,7 @@ isPrime n
 --   biggestPrimeAtMost 10 ==> 7
 
 biggestPrimeAtMost :: Integer -> Integer
-biggestPrimeAtMost n
-    | isPrime n     = n
-    | otherwise     = biggestPrimeAtMost (n-1)
+biggestPrimeAtMost n =
+  if isPrime n
+  then n
+  else biggestPrimeAtMost (n-1)
