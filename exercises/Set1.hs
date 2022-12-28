@@ -32,7 +32,7 @@ two = 2
 -- should take one argument and return it multiplied by two.
 
 double :: Integer -> Integer
-double x = 2 * x
+double x= 2*x
 
 ------------------------------------------------------------------------------
 -- Ex 3: define the function quadruple that uses the function double
@@ -56,7 +56,8 @@ quadruple x = double (double x)
 --   distance 0 0 1 1  ==>  1.4142135...
 --   distance 1 1 4 5  ==>  5.0
 
-distance x1 y1 x2 y2 = sqrt ((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
+distance :: Double -> Double -> Double -> Double -> Double
+distance x1 y1 x2 y2 = sqrt ((x1-x2)^2 + (y1-y2)^2)
 
 ------------------------------------------------------------------------------
 -- Ex 5: define the function eeny that returns "eeny" for even inputs
@@ -86,10 +87,10 @@ checkPassword password = if password == "swordfish" || password == "mellon"
 -- Write a function postagePrice that takes the weight of a package
 -- in grams, and returns the cost in credits.
 
-postagePrice :: Integer -> Integer
-postagePrice weigh | weigh > 5000 = 6000
-postagePrice weigh | weigh > 500 = 300 + weigh
-postagePrice weigh | weigh <= 500 = 250
+postagePrice :: Int -> Int
+postagePrice weight = if weight <= 500 then 250
+                      else if weight > 5000 then 6000
+                           else 300 + weight
 
 ------------------------------------------------------------------------------
 -- Ex 8: define a function isZero that returns True if it is given an
@@ -109,8 +110,8 @@ isZero _ = False
 -- computes the sum 1+2+...+n
 
 sumTo :: Integer -> Integer
-sumTo 1 = 1
-sumTo x = sumTo (x-1) + x
+sumTo 0 = 0
+sumTo n = n + sumTo (n-1)
 
 ------------------------------------------------------------------------------
 -- Ex 10: power n k should compute n to the power k (i.e. n^k)
@@ -137,6 +138,5 @@ power n k = n * power n (k-1)
 --   ilog3 7 ==> 2
 
 ilog3 :: Integer -> Integer
-ilog3 1 = 1
-ilog3 2 = 1
-ilog3 n = ilog3 (n `div` 3) + 1
+ilog3 0 = 0
+ilog3 n = 1 + ilog3 (div n 3)
