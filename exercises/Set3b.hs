@@ -96,7 +96,9 @@ mylast def (x:xs) = mylast def xs
 --   indexDefault ["a","b","c"] (-1) "d" ==> "d"
 
 indexDefault :: [a] -> Int -> a -> a
-indexDefault xs i def = todo
+indexDefault [] i def = def
+indexDefault (x:_) 0 _ = x
+indexDefault (x:xs) i def = indexDefault xs (i - 1) def
 
 ------------------------------------------------------------------------------
 -- Ex 5: define a function that checks if the given list is in
