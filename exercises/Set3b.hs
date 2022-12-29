@@ -53,7 +53,16 @@ buildList' start end iter = start : buildList' start end (iter-1)
 -- Ps. you'll probably need a recursive helper function
 
 sums :: Int -> [Int]
-sums i = todo
+sums 1 = [1]
+sums i = append (sums' i) (sums (i-1))
+
+sums' :: Int -> Int
+sums' 1 = 1
+sums' i = i + sums' (i-1)
+
+append :: Int -> [Int] -> [Int]
+append a [] = [a]
+append a (x:xs) = x : append a xs
 
 ------------------------------------------------------------------------------
 -- Ex 3: define a function mylast that returns the last value of the
