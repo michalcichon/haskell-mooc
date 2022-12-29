@@ -96,9 +96,9 @@ mylast def (x:xs) = mylast def xs
 --   indexDefault ["a","b","c"] (-1) "d" ==> "d"
 
 indexDefault :: [a] -> Int -> a -> a
-indexDefault [] i def = def
-indexDefault (x:_) 0 _ = x
-indexDefault (x:xs) i def = indexDefault xs (i - 1) def
+indexDefault [] i def       = def
+indexDefault (x:_) 0 _      = x
+indexDefault (x:xs) i def   = indexDefault xs (i - 1) def
 
 ------------------------------------------------------------------------------
 -- Ex 5: define a function that checks if the given list is in
@@ -114,7 +114,12 @@ indexDefault (x:xs) i def = indexDefault xs (i - 1) def
 --   sorted [7,2,7] ==> False
 
 sorted :: [Int] -> Bool
-sorted xs = todo
+sorted [] = True
+sorted (x:[]) = True
+sorted (x:y:[]) = y >= x
+sorted (x:y:rest)
+    | sorted(x:[y]) = sorted(y:rest)
+    | otherwise     = False
 
 ------------------------------------------------------------------------------
 -- Ex 6: compute the partial sums of the given list like this:
@@ -126,7 +131,11 @@ sorted xs = todo
 -- Use pattern matching and recursion (and the list constructors : and [])
 
 sumsOf :: [Int] -> [Int]
-sumsOf xs = todo
+sumsOf xs = sumsOf' xs 0
+
+sumsOf' :: [Int] -> Int -> [Int]
+sumsOf' [] _     = []
+sumsOf' (x:xs) t = a : sumsOf' xs a where a = t+x
 
 ------------------------------------------------------------------------------
 -- Ex 7: implement the function merge that merges two sorted lists of
