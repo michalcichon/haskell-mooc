@@ -100,7 +100,8 @@ rangeOf xs = maximum xs - minimum xs
 --   longest [[1,2,3],[4,5],[6]] ==> [1,2,3]
 --   longest ["bcd","def","ab"] ==> "bcd"
 
-longest = todo
+longest :: (Ord a) => [[a]] -> [a]
+longest xs = head $ last $ groupBy (\x y -> length x == length y) $ sortBy (comparing (\x -> (length x, head x))) xs
 
 ------------------------------------------------------------------------------
 -- Ex 6: Implement the function incrementKey, that takes a list of
@@ -116,8 +117,8 @@ longest = todo
 --   incrementKey True [(True,1),(False,3),(True,4)] ==> [(True,2),(False,3),(True,5)]
 --   incrementKey 'a' [('a',3.4)] ==> [('a',4.4)]
 
-incrementKey :: k -> [(k,v)] -> [(k,v)]
-incrementKey = todo
+incrementKey :: (Eq k, Num v) => k -> [(k,v)] -> [(k,v)]
+incrementKey key pairs = map (\(k, v) -> if k == key then (k, v + 1) else (k, v)) pairs
 
 ------------------------------------------------------------------------------
 -- Ex 7: compute the average of a list of values of the Fractional
