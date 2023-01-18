@@ -172,7 +172,7 @@ winner scores player1 player2 =
 --     ==> Map.fromList [(False,3),(True,1)]
 
 freqs :: (Eq a, Ord a) => [a] -> Map.Map a Int
-freqs xs = todo
+freqs xs = Map.fromListWith (+) [(x, 1) | x <- xs]
 
 ------------------------------------------------------------------------------
 -- Ex 10: recall the withdraw example from the course material. Write a
