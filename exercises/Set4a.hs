@@ -152,7 +152,12 @@ average xs = foldr (+) 0 xs / fromIntegral (length xs)
 --     ==> "Lisa"
 
 winner :: Map.Map String Int -> String -> String -> String
-winner scores player1 player2 = todo
+winner scores player1 player2 = 
+    if Map.lookup player1 scores > Map.lookup player2 scores
+        then player1
+        else if Map.lookup player1 scores < Map.lookup player2 scores
+            then player2
+            else player1
 
 ------------------------------------------------------------------------------
 -- Ex 9: compute how many times each value in the list occurs. Return
