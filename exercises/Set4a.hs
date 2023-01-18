@@ -133,7 +133,7 @@ incrementKey key pairs = map (\(k, v) -> if k == key then (k, v + 1) else (k, v)
 -- length to a Fractional
 
 average :: Fractional a => [a] -> a
-average xs = todo
+average xs = foldr (+) 0 xs / fromIntegral (length xs)
 
 ------------------------------------------------------------------------------
 -- Ex 8: given a map from player name to score and two players, return
