@@ -218,7 +218,12 @@ transfer from to amount bank =
 --         ==> array (1,4) [(1,"one"),(2,"three"),(3,"two"),(4,"four")]
 
 swap :: Ix i => i -> i -> Array i a -> Array i a
-swap i j arr = todo
+swap i j arr =
+    let (l, u) = bounds arr
+        x = arr ! i
+        y = arr ! j
+        arr' = arr // [(i, y), (j, x)]
+    in arr'
 
 ------------------------------------------------------------------------------
 -- Ex 12: given an Array, find the index of the largest element. You
