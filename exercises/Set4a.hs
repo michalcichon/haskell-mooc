@@ -200,7 +200,15 @@ freqs xs = Map.fromListWith (+) [(x, 1) | x <- xs]
 --     ==> fromList [("Bob",100),("Mike",50)]
 
 transfer :: String -> String -> Int -> Map.Map String Int -> Map.Map String Int
-transfer from to amount bank = todo
+transfer from to amount bank =
+    case (Map.lookup from bank, Map.lookup to bank) of
+        (Just fromAccount, Just toAccount) ->
+            if (fromAccount < amount) || (amount < 0)
+                then bank
+                else let newFromAccount = fromAccount - amount
+                         newToAccount = toAccount + amount
+                      in Map.insert from newFromAccount (Map.insert to newToAccount bank)
+        _ -> bank
 
 ------------------------------------------------------------------------------
 -- Ex 11: given an Array and two indices, swap the elements in the indices.
