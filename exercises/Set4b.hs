@@ -22,10 +22,8 @@ countNothings :: [Maybe a] -> Int
 countNothings xs = foldr countHelper 0 xs
 
 countHelper :: Maybe a -> Int -> Int
-countHelper maybeVal acc = case maybeVal of
-  Nothing -> acc + 1
-  Just _ -> acc
-
+countHelper Nothing n = n+1
+countHelper (Just _) n = n
 
 ------------------------------------------------------------------------------
 -- Ex 2: myMaximum with a fold. Just like in the previous exercise,
@@ -39,7 +37,8 @@ myMaximum :: [Int] -> Int
 myMaximum [] = 0
 myMaximum (x:xs) = foldr maxHelper x xs
 
-maxHelper val acc = if val > acc then val else acc
+maxHelper :: Int -> Int -> Int
+maxHelper = max
 
 ------------------------------------------------------------------------------
 -- Ex 3: compute the sum and length of a list with a fold. Define
@@ -56,11 +55,8 @@ maxHelper val acc = if val > acc then val else acc
 sumAndLength :: [Double] -> (Double,Int)
 sumAndLength xs = foldr slHelper slStart xs
 
-slStart :: (Double, Int)
-slStart = (0.0, 0)
-
-slHelper :: Double -> (Double, Int) -> (Double, Int)
-slHelper x (s, l) = (x + s, l + 1)
+slStart = (0,0)
+slHelper x (sum,cnt) = (sum+x,cnt+1)
 
 ------------------------------------------------------------------------------
 -- Ex 4: implement concat with a fold. Define concatHelper and
@@ -75,7 +71,7 @@ myConcat :: [[a]] -> [a]
 myConcat xs = foldr concatHelper concatStart xs
 
 concatStart = []
-concatHelper xs ys = xs ++ ys
+concatHelper = (++)
 
 ------------------------------------------------------------------------------
 -- Ex 5: get all occurrences of the largest number in a list with a
@@ -89,11 +85,10 @@ concatHelper xs ys = xs ++ ys
 largest :: [Int] -> [Int]
 largest xs = foldr largestHelper [] xs
 
-largestHelper :: Int -> [Int] -> [Int]
 largestHelper x [] = [x]
 largestHelper x (y:ys)
-  | x > y     = [x]
-  | x == y    = x:y:ys
+  | x > y = [x]
+  | x == y = x:y:ys
   | otherwise = y:ys
 
 
@@ -110,7 +105,6 @@ largestHelper x (y:ys)
 myHead :: [a] -> Maybe a
 myHead xs = foldr headHelper Nothing xs
 
-headHelper :: a -> Maybe a -> Maybe a
 headHelper x _ = Just x
 
 ------------------------------------------------------------------------------
@@ -128,5 +122,4 @@ myLast xs = foldr lastHelper Nothing xs
 
 lastHelper :: a -> Maybe a -> Maybe a
 lastHelper x Nothing = Just x
-lastHelper _ acc = acc
-
+lastHelper _ (Just x) = Just x
