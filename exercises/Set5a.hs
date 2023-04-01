@@ -243,14 +243,16 @@ data OneOrTwo a = One a | Two a a
 -- Also define the functions toList and fromList that convert between
 -- KeyVals and lists of pairs.
 
-data KeyVals k v = KeyValsUndefined
+data KeyVals k v = Empty | Pair k v (KeyVals k v)
   deriving Show
 
 toList :: KeyVals k v -> [(k,v)]
-toList = todo
+toList Empty = []
+toList (Pair k v kvs) = (k, v) : toList kvs
 
 fromList :: [(k,v)] -> KeyVals k v
-fromList = todo
+fromList [] = Empty
+fromList ((k,v):kvs) = Pair k v (fromList kvs)
 
 ------------------------------------------------------------------------------
 -- Ex 11: The data type Nat is the so called Peano
