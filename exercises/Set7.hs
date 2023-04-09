@@ -96,10 +96,18 @@ add x (Set xs) = Set $ add' x xs
 data Event = AddEggs | AddFlour | AddSugar | Mix | Bake
   deriving (Eq,Show)
 
-data State = Start | Error | Finished
+data State = Start | Eggs | Dough | SweetDough | Mixed | Error | Finished
   deriving (Eq,Show)
 
-step = todo
+step Finished _ = Finished
+step Error _ = Error
+step Start AddEggs = Eggs
+step Eggs AddFlour = Dough
+step Dough AddSugar = SweetDough
+step SweetDough Mix = Mixed
+step SweetDough _ = SweetDough
+step Mixed Bake = Finished
+step _ _ = Error
 
 -- do not edit this
 bake :: [Event] -> State
