@@ -235,7 +235,8 @@ exampleCircle = fill red (circle 80 100 200)
 --        ["000000","000000","000000","000000","000000","000000"]]
 
 rectangle :: Int -> Int -> Int -> Int -> Shape
-rectangle x0 y0 w h = todo
+rectangle x0 y0 w h = Shape f
+  where f (Coord x y) = and [x >= x0, x < x0 + w, y >= y0, y < y0 + h]
 ------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------
@@ -251,10 +252,12 @@ rectangle x0 y0 w h = todo
 -- shape.
 
 union :: Shape -> Shape -> Shape
-union = todo
+union (Shape s1) (Shape s2) = Shape s
+  where s coord = s1 coord || s2 coord
 
 cut :: Shape -> Shape -> Shape
-cut = todo
+cut (Shape s1) (Shape s2) = Shape s
+  where s coord = s1 coord && not (s2 coord)
 ------------------------------------------------------------------------------
 
 -- Here's a snowman, built using union from circles and rectangles.
@@ -282,7 +285,10 @@ exampleSnowman = fill white snowman
 --        ["000000","000000","000000"]]
 
 paintSolid :: Color -> Shape -> Picture -> Picture
-paintSolid color shape base = todo
+paintSolid color (Shape shape) (Picture base) = Picture picture
+  where picture coord
+         | shape coord = color
+         | otherwise = base coord
 ------------------------------------------------------------------------------
 
 allWhite :: Picture
